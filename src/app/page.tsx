@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Heart, MapPin, Calendar, HandHeart, Star } from "lucide-react";
 import Image from "next/image";
 
@@ -48,7 +48,7 @@ const FloatingHearts = () => {
 };
 
 export default function Home() {
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
   };
