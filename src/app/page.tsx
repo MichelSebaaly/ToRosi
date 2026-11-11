@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Heart, MapPin, Calendar, HandHeart, Star } from "lucide-react";
 import Image from "next/image";
 
 // --- FLOATING HEARTS BACKGROUND COMPONENT ---
-// We use a fixed array of properties so the hearts drift organically at different speeds and sizes.
 const FloatingHearts = () => {
   const hearts = [
     { id: 1, left: "10%", delay: 0, duration: 15, size: 24 },
@@ -30,8 +30,8 @@ const FloatingHearts = () => {
           initial={{ y: 0, opacity: 0, x: 0 }}
           animate={{
             y: "-120vh",
-            opacity: [0, 1, 1, 0], // Fades in, stays visible, fades out at the top
-            x: [0, -20, 20, -15, 10, 0], // Gentle side-to-side swaying
+            opacity: [0, 1, 1, 0],
+            x: [0, -20, 20, -15, 10, 0],
           }}
           transition={{
             duration: heart.duration,
@@ -47,6 +47,82 @@ const FloatingHearts = () => {
   );
 };
 
+// --- TIME TOGETHER TIMER COMPONENT ---
+const TimeTogether = () => {
+  const startDate = new Date("2026-05-25").getTime();
+
+  const [time, setTime] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const difference = now - startDate;
+
+      setTime({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        ),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000),
+      });
+    };
+
+    updateTimer(); // Initial call
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="mt-16 pt-8 border-t border-rose-100/50">
+      <p className="text-slate-400 font-medium tracking-widest uppercase text-xs mb-6">
+        Time Since You Changed My Life
+      </p>
+      <div className="flex justify-center gap-4 md:gap-8 text-rose-400 font-playfair">
+        <div className="flex flex-col items-center">
+          <span className="text-3xl md:text-4xl">{time.days}</span>
+          <span className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">
+            Days
+          </span>
+        </div>
+        <span className="text-2xl md:text-3xl font-light opacity-50">:</span>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl md:text-4xl">
+            {time.hours.toString().padStart(2, "0")}
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">
+            Hrs
+          </span>
+        </div>
+        <span className="text-2xl md:text-3xl font-light opacity-50">:</span>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl md:text-4xl">
+            {time.minutes.toString().padStart(2, "0")}
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">
+            Min
+          </span>
+        </div>
+        <span className="text-2xl md:text-3xl font-light opacity-50">:</span>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl md:text-4xl">
+            {time.seconds.toString().padStart(2, "0")}
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">
+            Sec
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- MAIN HOME PAGE COMPONENT ---
 export default function Home() {
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 40 },
@@ -55,7 +131,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden relative">
-      {/* Background Animation injected here */}
       <FloatingHearts />
 
       {/* 1. HERO SECTION */}
@@ -66,7 +141,6 @@ export default function Home() {
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="text-center bg-white/40 p-8 md:p-12 rounded-[2.5rem] backdrop-blur-sm shadow-sm border border-white/50 max-w-2xl w-full mx-4"
         >
-          {/* The Beautiful Photo Frame */}
           <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 p-2 rounded-full bg-white/60 backdrop-blur-md shadow-xl border border-white/80">
             <div className="relative w-full h-full rounded-full overflow-hidden shadow-inner">
               <Image
@@ -238,7 +312,6 @@ export default function Home() {
           variants={fadeUp}
           className="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm p-10 md:p-16 rounded-3xl shadow-sm border border-rose-50 text-center relative overflow-hidden"
         >
-          {/* Subtle gradient background inside the card */}
           <div className="absolute inset-0 bg-gradient-to-b from-rose-50/50 to-transparent opacity-50 z-0"></div>
 
           <div className="relative z-10">
@@ -268,6 +341,7 @@ export default function Home() {
             <p className="mt-12 text-slate-400 font-medium tracking-widest uppercase text-sm">
               Love, Michel Jawzik.
             </p>
+            <TimeTogether />
           </div>
         </motion.div>
       </section>
