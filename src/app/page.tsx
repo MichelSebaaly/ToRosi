@@ -1,69 +1,276 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Heart, MapPin, Calendar, HandHeart, Star } from "lucide-react";
 import Image from "next/image";
 
-export default function Home() {
+// --- FLOATING HEARTS BACKGROUND COMPONENT ---
+// We use a fixed array of properties so the hearts drift organically at different speeds and sizes.
+const FloatingHearts = () => {
+  const hearts = [
+    { id: 1, left: "10%", delay: 0, duration: 15, size: 24 },
+    { id: 2, left: "25%", delay: 4, duration: 18, size: 18 },
+    { id: 3, left: "40%", delay: 2, duration: 20, size: 32 },
+    { id: 4, left: "60%", delay: 8, duration: 16, size: 20 },
+    { id: 5, left: "80%", delay: 1, duration: 19, size: 28 },
+    { id: 6, left: "90%", delay: 6, duration: 17, size: 22 },
+    { id: 7, left: "15%", delay: 12, duration: 14, size: 26 },
+    { id: 8, left: "35%", delay: 9, duration: 22, size: 16 },
+    { id: 9, left: "55%", delay: 3, duration: 18, size: 30 },
+    { id: 10, left: "75%", delay: 11, duration: 15, size: 24 },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {hearts.map((heart) => (
+        <motion.div
+          key={heart.id}
+          className="absolute bottom-[-10%] text-rose-300/30"
+          style={{ left: heart.left }}
+          initial={{ y: 0, opacity: 0, x: 0 }}
+          animate={{
+            y: "-120vh",
+            opacity: [0, 1, 1, 0], // Fades in, stays visible, fades out at the top
+            x: [0, -20, 20, -15, 10, 0], // Gentle side-to-side swaying
+          }}
+          transition={{
+            duration: heart.duration,
+            repeat: Infinity,
+            delay: heart.delay,
+            ease: "linear",
+          }}
+        >
+          <Heart size={heart.size} fill="currentColor" />
+        </motion.div>
+      ))}
     </div>
+  );
+};
+
+export default function Home() {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
+  };
+
+  return (
+    <main className="min-h-screen overflow-hidden relative">
+      {/* Background Animation injected here */}
+      <FloatingHearts />
+
+      {/* 1. HERO SECTION */}
+      <section className="relative h-screen flex flex-col items-center justify-center px-6 z-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="text-center bg-white/40 p-8 md:p-12 rounded-[2.5rem] backdrop-blur-sm shadow-sm border border-white/50 max-w-2xl w-full mx-4"
+        >
+          {/* The Beautiful Photo Frame */}
+          <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 p-2 rounded-full bg-white/60 backdrop-blur-md shadow-xl border border-white/80">
+            <div className="relative w-full h-full rounded-full overflow-hidden shadow-inner">
+              <Image
+                src="/us.jpg"
+                alt="Michel and Rosalia"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+
+          <p className="tracking-widest uppercase text-xs md:text-sm text-rose-400 font-semibold mb-6">
+            To my wife, my everything, my always.
+          </p>
+          <h1 className="font-playfair text-5xl md:text-7xl text-slate-900 mb-6">
+            For Rosalia
+          </h1>
+          <div className="w-16 h-[1px] bg-rose-300 mx-auto mt-6"></div>
+        </motion.div>
+      </section>
+
+      {/* 2. THE JOURNEY TIMELINE */}
+      <section className="py-24 px-6 md:px-12 max-w-4xl mx-auto z-10 relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUp}
+          className="text-center mb-20"
+        >
+          <h2 className="font-playfair text-4xl md:text-5xl text-slate-900 mb-4">
+            Our Journey
+          </h2>
+          <p className="text-slate-500 font-light max-w-lg mx-auto">
+            From our time around Abrams Hall to everywhere we go next, every
+            moment with you is my favorite.
+          </p>
+        </motion.div>
+
+        <div className="space-y-16">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUp}
+            className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-12"
+          >
+            <div className="hidden md:flex flex-col items-center mt-2">
+              <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-400 shadow-sm border border-rose-100">
+                <Calendar size={20} />
+              </div>
+              <div className="w-[1px] h-32 bg-rose-100 mt-4"></div>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-rose-50 flex-1">
+              <span className="text-rose-400 text-sm font-semibold tracking-wide">
+                The Anchor of My Life
+              </span>
+              <h3 className="font-playfair text-2xl text-slate-800 mt-2 mb-3">
+                When it all started
+              </h3>
+              <p className="text-slate-600 font-light leading-relaxed">
+                From the very beginning, you brought a light into my world that
+                I never want to be without. You aren't just my wife; you are the
+                absolute center of my universe. Every day with you is a reminder
+                of how lucky I am. I mean every word said here bhebik ktir ya
+                rouhe ente I can't live without you.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUp}
+            className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-12"
+          >
+            <div className="hidden md:flex flex-col items-center mt-2">
+              <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-400 shadow-sm border border-rose-100">
+                <MapPin size={20} />
+              </div>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-rose-50 flex-1">
+              <span className="text-rose-400 text-sm font-semibold tracking-wide">
+                Every Step By Your Side
+              </span>
+              <h3 className="font-playfair text-2xl text-slate-800 mt-2 mb-3">
+                Exploring together
+              </h3>
+              <p className="text-slate-600 font-light leading-relaxed">
+                Whether we are traveling the world or just sharing a quiet
+                moment together, the only thing that matters is that I am next
+                to you. No matter where we go, home is simply wherever you are.
+                aanjad ma bi hemne ella ene koun hadik w bas wjoudik houwe l
+                hayet.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUp}
+            className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-12"
+          >
+            <div className="hidden md:flex flex-col items-center mt-2">
+              <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-400 shadow-sm border border-rose-100">
+                <Star size={20} />
+              </div>
+              <div className="w-[1px] h-32 bg-rose-100 mt-4"></div>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-rose-50 flex-1">
+              <span className="text-rose-400 text-sm font-semibold tracking-wide">
+                Your Beautiful Drive
+              </span>
+              <h3 className="font-playfair text-2xl text-slate-800 mt-2 mb-3">
+                In Awe of You
+              </h3>
+              <p className="text-slate-600 font-light leading-relaxed">
+                I watch how hard you work and the quiet strength you pour into
+                everything you do. Your dedication inspires me every single day.
+                I love you not just for the warmth you bring to my life, but for
+                the incredible woman you are to the world. Btaarfe lama shoufik
+                bteshteghle hl2d bmout betala3 b2oul eno ade ente awiye btaatine
+                ouwe ele men wara hal shi bmoutttttttttt fike ya marte.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUp}
+            className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-12"
+          >
+            <div className="hidden md:flex flex-col items-center mt-2">
+              <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-400 shadow-sm border border-rose-100">
+                <HandHeart size={20} />
+              </div>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-rose-50 flex-1">
+              <span className="text-rose-400 text-sm font-semibold tracking-wide">
+                My Promise
+              </span>
+              <h3 className="font-playfair text-2xl text-slate-800 mt-2 mb-3">
+                Always By Your Side
+              </h3>
+              <p className="text-slate-600 font-light leading-relaxed">
+                No matter what life brings, I will always be here to help you,
+                support you, and lift you up. Through every high and every low,
+                you will never have to face anything alone. I am by your side,
+                always and forever. law shou ma sar ya albe waad ana hadik bade
+                tkhaliya bi belik ma bet ghibe aan tefkire.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 3. THE LETTER */}
+      <section className="py-32 px-6 relative z-10">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm p-10 md:p-16 rounded-3xl shadow-sm border border-rose-50 text-center relative overflow-hidden"
+        >
+          {/* Subtle gradient background inside the card */}
+          <div className="absolute inset-0 bg-gradient-to-b from-rose-50/50 to-transparent opacity-50 z-0"></div>
+
+          <div className="relative z-10">
+            <Heart
+              className="mx-auto text-rose-400 mb-8 fill-rose-100"
+              size={32}
+            />
+            <h2 className="font-playfair text-3xl md:text-4xl text-slate-800 mb-8">
+              A Note for You
+            </h2>
+            <div className="space-y-6 text-slate-600 font-light leading-relaxed text-lg md:text-xl font-playfair italic">
+              <p>
+                Marte, I built this space just to remind you of a simple truth:
+                I cannot imagine a single day of this life without you. You are
+                my greatest blessing, my closest confidante, and the only one I
+                will ever need.
+              </p>
+              <p>
+                Thank you for being my world, and for loving me exactly as I am.
+                I love you more than words could ever fully say. ente oomre w
+                hayete wel ouwe taba3e ghyebik bye2telne mafi kelme aw shi bi
+                3aber 3an hobbe elik rah a3mol kel shi be2dar aamlo la khalike
+                maae, wafe, mhazab, behtermik, b2adrik, bse3dik, bet3ab
+                kermelik, ente awlawiyte aatoul.
+              </p>
+            </div>
+            <p className="mt-12 text-slate-400 font-medium tracking-widest uppercase text-sm">
+              Love, Michel Jawzik.
+            </p>
+          </div>
+        </motion.div>
+      </section>
+    </main>
   );
 }
