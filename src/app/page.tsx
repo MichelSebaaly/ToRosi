@@ -2,7 +2,14 @@
 
 import { motion, Variants } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Heart, MapPin, Calendar, HandHeart, Star } from "lucide-react";
+import {
+  Heart,
+  MapPin,
+  Calendar,
+  HandHeart,
+  Star,
+  Sparkles,
+} from "lucide-react";
 import Image from "next/image";
 
 // --- FLOATING HEARTS BACKGROUND COMPONENT ---
@@ -73,7 +80,7 @@ const TimeTogether = () => {
       });
     };
 
-    updateTimer(); // Initial call
+    updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -117,6 +124,72 @@ const TimeTogether = () => {
             Sec
           </span>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// --- WHEN YOU MISS ME COMPONENT ---
+const WhenYouMissMe = () => {
+  const [message, setMessage] = useState("");
+  const [animationKey, setAnimationKey] = useState(0);
+
+  // You can add as many messages here as you want!
+  const loveNotes = [
+    "Even while I'm on duty, you are the only thing on my mind.",
+    "Bhebik ktir ya rouhe. I'm always right here with you.",
+    "Aanjad wjoudik houwe l hayet. I can't wait to come home to you.",
+    "I am so incredibly proud of the hardworking woman you are.",
+    "Law shou ma sar, I am yours. Always and forever.",
+    "Just looking at a picture of you gives me the strength I need today.",
+    "Ente awlawiyte aatoul. Never forget that.",
+    "Every second away from you is just a countdown until I can hold you again.",
+    "Ma bade ghayrik bhal hayet.",
+    "Rah hereb l dene kermelik know that.",
+    "Kes ekhtak naza3telle dafire 😂",
+    "aam bet zakzekneeee, 123 soleil bhebik",
+    "Ma t2oulile aam aazbak bel mshewir la aande law kente bgher kawkab kel yom brouh",
+  ];
+
+  const handleTap = () => {
+    // Pick a random message that is different from the current one
+    let randomMsg;
+    do {
+      randomMsg = loveNotes[Math.floor(Math.random() * loveNotes.length)];
+    } while (randomMsg === message && loveNotes.length > 1);
+
+    setMessage(randomMsg);
+    setAnimationKey((prev) => prev + 1); // Forces Framer Motion to replay the fade animation
+  };
+
+  return (
+    <div className="mt-16 flex flex-col items-center">
+      <button
+        onClick={handleTap}
+        className="group relative flex items-center gap-2 bg-rose-50 text-rose-500 px-6 py-3 rounded-full font-medium tracking-wide text-sm shadow-sm border border-rose-100 hover:bg-rose-100 transition-colors duration-300"
+      >
+        <Sparkles
+          size={16}
+          className="text-rose-400 group-hover:animate-pulse"
+        />
+        Tap when you miss me
+        {/* Soft glowing ring behind the button */}
+        <span className="absolute inset-0 rounded-full border border-rose-300 animate-ping opacity-20"></span>
+      </button>
+
+      {/* The message reveals smoothly down here */}
+      <div className="min-h-[80px] mt-6 flex items-center justify-center">
+        {message && (
+          <motion.p
+            key={animationKey}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-slate-700 font-playfair italic text-lg md:text-xl px-4 text-center"
+          >
+            "{message}"
+          </motion.p>
+        )}
       </div>
     </div>
   );
@@ -182,6 +255,7 @@ export default function Home() {
         </motion.div>
 
         <div className="space-y-16">
+          {/* Foundation */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -212,6 +286,7 @@ export default function Home() {
             </div>
           </motion.div>
 
+          {/* Adventures */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -223,6 +298,7 @@ export default function Home() {
               <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-400 shadow-sm border border-rose-100">
                 <MapPin size={20} />
               </div>
+              <div className="w-[1px] h-32 bg-rose-100 mt-4"></div>
             </div>
             <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-rose-50 flex-1">
               <span className="text-rose-400 text-sm font-semibold tracking-wide">
@@ -241,6 +317,7 @@ export default function Home() {
             </div>
           </motion.div>
 
+          {/* Hard Worker */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -272,6 +349,7 @@ export default function Home() {
             </div>
           </motion.div>
 
+          {/* The Promise */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -324,24 +402,26 @@ export default function Home() {
             </h2>
             <div className="space-y-6 text-slate-600 font-light leading-relaxed text-lg md:text-xl font-playfair italic">
               <p>
-                Marte, I built this space just to remind you of a simple truth:
+                "Marte, I built this space just to remind you of a simple truth:
                 I cannot imagine a single day of this life without you. You are
                 my greatest blessing, my closest confidante, and the only one I
-                will ever need.
+                will ever need."
               </p>
               <p>
-                Thank you for being my world, and for loving me exactly as I am.
-                I love you more than words could ever fully say. ente oomre w
-                hayete wel ouwe taba3e ghyebik bye2telne mafi kelme aw shi bi
+                "Thank you for being my world, and for loving me exactly as I
+                am. I love you more than words could ever fully say. ente oomre
+                w hayete wel ouwe taba3e ghyebik bye2telne mafi kelme aw shi bi
                 3aber 3an hobbe elik rah a3mol kel shi be2dar aamlo la khalike
                 maae, wafe, mhazab, behtermik, b2adrik, bse3dik, bet3ab
-                kermelik, ente awlawiyte aatoul.
+                kermelik, ente awlawiyte aatoul."
               </p>
             </div>
             <p className="mt-12 text-slate-400 font-medium tracking-widest uppercase text-sm">
               Love, Michel Jawzik.
             </p>
+
             <TimeTogether />
+            <WhenYouMissMe />
           </div>
         </motion.div>
       </section>
